@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 导入样式 -->
+    <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <title>Document</title>
+</head>
+<body>
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="index.html">前程无忧</a></li>
+        <li role="presentation"><a href="doutu.html">斗图表情包</a></li>
+        <li role="presentation"><a href="aicode.html">AI验证码</a></li>
+        <li role="presentation"><a href="biji.html">学习笔记</a></li>
+    </ul>
+        <!-- Table -->
+        <table class="table">
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>公司</th>
+              <th>公司详情</th>
+            </tr>
+          </thead>
+          <tbody id="form">
+            <!-- <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+            </tr> -->
+            <!-- <tr>
+              <th scope="row">2</th>
+              <td>Jacob</td>
+              <td>Thornton</td>
+              <td>@fat</td>
+            </tr> -->
+          </tbody>
+        </table>
+        <div  id="page"  class="pagination"></div>
+      <ul id="page" class="pagination"></ul>
+</body>
+    <script src="./js/jquery-3.5.1.min.js"></script>
+    <script src="./lib/js/bootstrap.min.js"></script>
+    <script src="./lib/js/bootstrap-paginator.js"></script>
+    <script>
+        function load(page){
+            // 网络请求
+          requestArgs={
+            url:"http://127.0.0.1:5000/company_message?page="+page+"&limit=20",
+            success:function(data){
+              result=JSON.parse(data)
+              data=result.data
+              console.log(data)
+              html=data.map(c=>`<tr>
+                                <th scope="row">`+c.id+`</th>
+                                <td>`+c.company_name+`</td>
+                                <td><a href="https://jobs.51job.com/all/co`+parseInt(c.company_id.substring(1))+`.html">公司详情</a></td>
+                              </tr>`).join('\n')
+            
+              $('#form').html(html)
+              
+              //分页设置
+              var options = {
+                bootstraMajorVersion:3,
+                currentPage:page,
+                totalPages:result.count/20,
+                onPageClicked:function(eveent,originalEvent,type,page){
+                  console.log(page)
+                  load(page)
+                    }
+                }
+                $('#page').bootstrapPaginator(options);
+              }
+            }
+          $.ajax(requestArgs)
+        }
+
+            $(function(){
+              load(1)
+            })
+    </script>
+</html>
